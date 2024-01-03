@@ -1,0 +1,7 @@
+.openapi-generator-ignore
+README.md
+Setup.hs
+cvpartner.cabal
+lib/CVPartner/API.hs
+lib/CVPartner/Types.hs
+stack.yaml

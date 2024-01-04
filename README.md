@@ -24,3 +24,8 @@ codium step1
     cabal init -i step2
     cd step2
     cabal run
+
+# Resources
+
+* https://www.youtube.com/watch?v=jjuSXbv1nW8
+* https://github.com/OpenAPITools/openapi-generator/tree/5eab3cef19675eebca9fc4e2d4905343e80fd316/samples/client/petstore/haskell-http-client

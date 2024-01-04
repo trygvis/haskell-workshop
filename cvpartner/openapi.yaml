@@ -1,0 +1,857 @@
+openapi: 3.0.1
+info:
+  license:
+    name: Proprietary
+  title: CVPartner
+  version: 0.0.1
+servers:
+- url: "https://{subdomain}.cvpartner.com"
+  variables:
+    subdomain:
+      default: ""
+paths:
+  /api/v3/cvs/{user_id}/{cv_id}:
+    get:
+      operationId: getFullCv
+      parameters:
+      - explode: false
+        in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: cv_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Cv'
+          description: OK
+  /api/v3/cvs/{user_id}/{cv_id}/{section_type}/{section_id}:
+    get:
+      operationId: getCvSection
+      parameters:
+      - explode: false
+        in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: cv_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: section_type
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: section_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CvSection'
+          description: OK
+  /api/v1/users/{user_id}:
+    get:
+      operationId: getUserById
+      parameters:
+      - explode: false
+        in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+  /api/v2/users/search:
+    get:
+      operationId: userSearch
+      parameters:
+      - explode: true
+        in: query
+        name: from
+        required: false
+        schema:
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: sort_by
+        required: false
+        schema:
+          description: "One of name, country, role and relevance."
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: deactivated
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: role
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: office_ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/User'
+                type: array
+          description: OK
+  /api/v1/countries:
+    get:
+      operationId: findCountries
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Country'
+                type: array
+          description: OK
+  /api/v4/search:
+    post:
+      operationId: searchByName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchByNameReq'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CvList'
+          description: OK
+components:
+  parameters:
+    user_id:
+      explode: false
+      in: path
+      name: user_id
+      required: true
+      schema:
+        type: string
+      style: simple
+    cv_id:
+      explode: false
+      in: path
+      name: cv_id
+      required: true
+      schema:
+        type: string
+      style: simple
+    section_type:
+      explode: false
+      in: path
+      name: section_type
+      required: true
+      schema:
+        type: string
+      style: simple
+    section_id:
+      explode: false
+      in: path
+      name: section_id
+      required: true
+      schema:
+        type: string
+      style: simple
+  schemas:
+    SearchByNameReq:
+      example:
+        offset: 0.8008281904610115
+        size: 6.027456183070403
+        must: "{}"
+        office_ids:
+        - office_ids
+        - office_ids
+      properties:
+        office_ids:
+          items:
+            type: string
+          type: array
+        offset:
+          type: number
+        size:
+          type: number
+        must:
+          type: object
+      required:
+      - must
+      - offset
+      - size
+      type: object
+    LocalizedString:
+      type: object
+    Cv:
+      example:
+        courses:
+        - null
+        - null
+        image:
+          small_thumb:
+            url: url
+          large:
+            url: url
+          thumb:
+            url: url
+          fit_thumb:
+            url: url
+          url: url
+        company_id: company_id
+        languages:
+        - null
+        - null
+        born_month: 6
+        place_of_residence: "{}"
+        educations:
+        - null
+        - null
+        positions:
+        - null
+        - null
+        title: "{}"
+        born_day: 0
+        certifications:
+        - null
+        - null
+        presentations:
+        - null
+        - null
+        recommendations:
+        - null
+        - null
+        born_year: 1
+        technologies:
+        - null
+        - null
+        work_experiences:
+        - null
+        - null
+        nationality: "{}"
+        user_id: user_id
+        key_qualifications:
+        - null
+        - null
+        project_experiences:
+        - null
+        - null
+        name: name
+        id: id
+        email: email
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        company_id:
+          type: string
+        name:
+          type: string
+        title:
+          type: object
+        email:
+          type: string
+        born_day:
+          type: integer
+        born_month:
+          type: integer
+        born_year:
+          type: integer
+        nationality:
+          type: object
+        place_of_residence:
+          type: object
+        educations:
+          items:
+            $ref: '#/components/schemas/Education'
+          type: array
+        key_qualifications:
+          items:
+            $ref: '#/components/schemas/KeyQualification'
+          type: array
+        project_experiences:
+          items:
+            $ref: '#/components/schemas/ProjectExperience'
+          type: array
+        work_experiences:
+          items:
+            $ref: '#/components/schemas/WorkExperience'
+          type: array
+        languages:
+          items:
+            $ref: '#/components/schemas/Language'
+          type: array
+        technologies:
+          items:
+            $ref: '#/components/schemas/Technology'
+          type: array
+        certifications:
+          items:
+            $ref: '#/components/schemas/Certification'
+          type: array
+        courses:
+          items:
+            $ref: '#/components/schemas/Course'
+          type: array
+        presentations:
+          items:
+            $ref: '#/components/schemas/Presentation'
+          type: array
+        recommendations:
+          items:
+            $ref: '#/components/schemas/Recommendation'
+          type: array
+        positions:
+          items:
+            $ref: '#/components/schemas/Position'
+          type: array
+        image:
+          $ref: '#/components/schemas/UserImage'
+    CvSection:
+      example:
+        key_qualification: null
+        education: null
+        work_experience: null
+      properties:
+        key_qualification:
+          $ref: '#/components/schemas/KeyQualification'
+        education:
+          $ref: '#/components/schemas/Education'
+        work_experience:
+          $ref: '#/components/schemas/WorkExperience'
+    CvSectionProperties:
+      properties:
+        order:
+          type: integer
+        starred:
+          type: boolean
+        disabled:
+          type: boolean
+        version:
+          type: integer
+        external_unique_id:
+          type: string
+        owner_updated_at:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    KeyQualification:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          recently_added:
+            type: boolean
+          label:
+            $ref: '#/components/schemas/LocalizedString'
+          long_description:
+            $ref: '#/components/schemas/LocalizedString'
+          tag_line:
+            $ref: '#/components/schemas/LocalizedString'
+        type: object
+    Education:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          degree:
+            $ref: '#/components/schemas/LocalizedString'
+          description:
+            $ref: '#/components/schemas/LocalizedString'
+          year_from:
+            type: string
+          month_from:
+            type: string
+          year_to:
+            type: string
+          month_to:
+            type: string
+          school:
+            $ref: '#/components/schemas/LocalizedString'
+        type: object
+    WorkExperience:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          employer:
+            $ref: '#/components/schemas/LocalizedString'
+          description:
+            $ref: '#/components/schemas/LocalizedString'
+          long_description:
+            $ref: '#/components/schemas/LocalizedString'
+          year_from:
+            type: string
+          month_from:
+            type: string
+          year_to:
+            type: string
+          month_to:
+            type: string
+        type: object
+    Language:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          level:
+            $ref: '#/components/schemas/LocalizedString'
+          name:
+            $ref: '#/components/schemas/LocalizedString'
+        type: object
+    Technology:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          uncategorized:
+            type: boolean
+          category:
+            $ref: '#/components/schemas/LocalizedString'
+        type: object
+    Certification:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          name:
+            $ref: '#/components/schemas/LocalizedString'
+          long_description:
+            $ref: '#/components/schemas/LocalizedString'
+          organizer:
+            $ref: '#/components/schemas/LocalizedString'
+          year:
+            type: string
+          month:
+            type: string
+          year_expire:
+            type: string
+          month_expire:
+            type: string
+        type: object
+    Course:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          name:
+            $ref: '#/components/schemas/LocalizedString'
+          long_description:
+            $ref: '#/components/schemas/LocalizedString'
+          program:
+            $ref: '#/components/schemas/LocalizedString'
+          year:
+            type: string
+          month:
+            type: string
+        type: object
+    Presentation:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          description:
+            $ref: '#/components/schemas/LocalizedString'
+          long_description:
+            $ref: '#/components/schemas/LocalizedString'
+          year:
+            type: string
+          month:
+            type: string
+        type: object
+    Recommendation:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          description:
+            $ref: '#/components/schemas/LocalizedString'
+          recommender:
+            $ref: '#/components/schemas/LocalizedString'
+        type: object
+    Position:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          name:
+            $ref: '#/components/schemas/LocalizedString'
+          description:
+            $ref: '#/components/schemas/LocalizedString'
+          year_from:
+            type: string
+          year_to:
+            type: string
+        type: object
+    ProjectExperience:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          area_amt:
+            type: string
+          area_unit:
+            type: string
+          customer:
+            $ref: '#/components/schemas/LocalizedString'
+          customer_anonymized:
+            $ref: '#/components/schemas/LocalizedString'
+          customer_description:
+            $ref: '#/components/schemas/LocalizedString'
+          description:
+            $ref: '#/components/schemas/LocalizedString'
+          long_description:
+            $ref: '#/components/schemas/LocalizedString'
+          industry:
+            $ref: '#/components/schemas/LocalizedString'
+          year_from:
+            type: string
+          month_from:
+            type: string
+          year_to:
+            type: string
+          month_to:
+            type: string
+          roles:
+            items:
+              $ref: '#/components/schemas/ProjectRole'
+            type: array
+        type: object
+    ProjectRole:
+      allOf:
+      - $ref: '#/components/schemas/CvSectionProperties'
+      - properties:
+          cv_role_id:
+            type: string
+          diverged_from_master:
+            type: boolean
+          name:
+            $ref: '#/components/schemas/LocalizedString'
+          summary:
+            $ref: '#/components/schemas/LocalizedString'
+          long_description:
+            $ref: '#/components/schemas/LocalizedString'
+        type: object
+    CvSummary:
+      example:
+        image: "{}"
+        company_id: company_id
+        titles: "{}"
+        title: title
+        country_code: country_code
+        language_code: language_code
+        updated_at: updated_at
+        user_id: user_id
+        name: name
+        owner_updated_at: owner_updated_at
+        id: id
+        email: email
+        language_codes:
+        - language_codes
+        - language_codes
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        name:
+          type: string
+        image:
+          type: object
+        title:
+          type: string
+        titles:
+          type: object
+        email:
+          type: string
+        company_id:
+          type: string
+        updated_at:
+          type: string
+        owner_updated_at:
+          type: string
+        country_code:
+          type: string
+        language_code:
+          type: string
+        language_codes:
+          items:
+            type: string
+          type: array
+      required:
+      - id
+    CvListEntry:
+      example:
+        cv:
+          image: "{}"
+          company_id: company_id
+          titles: "{}"
+          title: title
+          country_code: country_code
+          language_code: language_code
+          updated_at: updated_at
+          user_id: user_id
+          name: name
+          owner_updated_at: owner_updated_at
+          id: id
+          email: email
+          language_codes:
+          - language_codes
+          - language_codes
+        preview_url: preview_url
+      properties:
+        preview_url:
+          type: string
+        cv:
+          $ref: '#/components/schemas/CvSummary'
+      required:
+      - cv
+      - preview_url
+    CvList:
+      example:
+        cvs:
+        - cv:
+            image: "{}"
+            company_id: company_id
+            titles: "{}"
+            title: title
+            country_code: country_code
+            language_code: language_code
+            updated_at: updated_at
+            user_id: user_id
+            name: name
+            owner_updated_at: owner_updated_at
+            id: id
+            email: email
+            language_codes:
+            - language_codes
+            - language_codes
+          preview_url: preview_url
+        - cv:
+            image: "{}"
+            company_id: company_id
+            titles: "{}"
+            title: title
+            country_code: country_code
+            language_code: language_code
+            updated_at: updated_at
+            user_id: user_id
+            name: name
+            owner_updated_at: owner_updated_at
+            id: id
+            email: email
+            language_codes:
+            - language_codes
+            - language_codes
+          preview_url: preview_url
+        total: 0.8008281904610115
+      properties:
+        total:
+          type: number
+        cvs:
+          items:
+            $ref: '#/components/schemas/CvListEntry'
+          type: array
+      required:
+      - cvs
+      - total
+    Office:
+      example:
+        name: name
+        _id: _id
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+      required:
+      - _id
+      - name
+    Country:
+      example:
+        code: code
+        offices:
+        - name: name
+          _id: _id
+        - name: name
+          _id: _id
+        _id: _id
+      properties:
+        _id:
+          type: string
+        code:
+          type: string
+        offices:
+          items:
+            $ref: '#/components/schemas/Office'
+          type: array
+      required:
+      - _id
+      - code
+      - offices
+    User:
+      example:
+        image:
+          small_thumb:
+            url: url
+          large:
+            url: url
+          thumb:
+            url: url
+          fit_thumb:
+            url: url
+          url: url
+        role: role
+        deactivated_at: true
+        created_at: created_at
+        telephone: telephone
+        external_unique_id: external_unique_id
+        extra_roles:
+        - extra_roles
+        - extra_roles
+        deactivated: true
+        office_id: office_id
+        country_code: country_code
+        language_code: language_code
+        upn: upn
+        office_name: office_name
+        updated_at: updated_at
+        user_id: user_id
+        name: name
+        id: id
+        email: email
+        country_id: country_id
+        default_cv_id: default_cv_id
+      properties:
+        user_id:
+          type: string
+        id:
+          type: string
+        email:
+          type: string
+        external_unique_id:
+          type: string
+        upn:
+          type: string
+        name:
+          type: string
+        telephone:
+          type: string
+        default_cv_id:
+          type: string
+        deactivated:
+          type: boolean
+        deactivated_at:
+          type: boolean
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        role:
+          type: string
+        extra_roles:
+          items:
+            type: string
+          type: array
+        office_id:
+          type: string
+        office_name:
+          type: string
+        country_id:
+          type: string
+        country_code:
+          type: string
+        language_code:
+          type: string
+        image:
+          $ref: '#/components/schemas/UserImage'
+      required:
+      - id
+      - user_id
+    UserImage:
+      example:
+        small_thumb:
+          url: url
+        large:
+          url: url
+        thumb:
+          url: url
+        fit_thumb:
+          url: url
+        url: url
+      properties:
+        url:
+          type: string
+        thumb:
+          $ref: '#/components/schemas/ImageUrl'
+        fit_thumb:
+          $ref: '#/components/schemas/ImageUrl'
+        large:
+          $ref: '#/components/schemas/ImageUrl'
+        small_thumb:
+          $ref: '#/components/schemas/ImageUrl'
+    ImageUrl:
+      example:
+        url: url
+      properties:
+        url:
+          type: string
+  securitySchemes:
+    basicAuth:
+      scheme: basic
+      type: http

@@ -11,6 +11,10 @@ servers:
       subdomain:
         default: ""
 
+#security:
+#  - basicAuth: []
+#  - bearerAuth: []
+
 paths:
   /api/v3/cvs/{user_id}/{cv_id}:
     get:
@@ -135,6 +139,14 @@ paths:
                 $ref: '#/components/schemas/CvList'
 
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+#    bearerAuth:
+#      type: http
+#      scheme: bearer
+
   parameters:
     user_id:
       name: user_id

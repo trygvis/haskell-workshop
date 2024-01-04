@@ -60,14 +60,14 @@ import qualified Prelude as P
 -- *** findCountries
 
 -- | @GET \/api\/v1\/countries@
--- 
+--
 findCountries
   :: Accept accept -- ^ request accept ('MimeType')
   -> CVPartnerRequest FindCountries MimeNoContent [Country] accept
 findCountries  _ =
   _mkRequest "GET" ["/api/v1/countries"]
 
-data FindCountries  
+data FindCountries
 -- | @*/*@
 instance MimeType mtype => Produces FindCountries mtype
 
@@ -75,7 +75,7 @@ instance MimeType mtype => Produces FindCountries mtype
 -- *** getCvSection
 
 -- | @GET \/api\/v3\/cvs\/{user_id}\/{cv_id}\/{section_type}\/{section_id}@
--- 
+--
 getCvSection
   :: Accept accept -- ^ request accept ('MimeType')
   -> UserId -- ^ "userId"
@@ -86,7 +86,7 @@ getCvSection
 getCvSection  _ (UserId userId) (CvId cvId) (SectionType sectionType) (SectionId sectionId) =
   _mkRequest "GET" ["/api/v3/cvs/",toPath userId,"/",toPath cvId,"/",toPath sectionType,"/",toPath sectionId]
 
-data GetCvSection  
+data GetCvSection
 -- | @*/*@
 instance MimeType mtype => Produces GetCvSection mtype
 
@@ -94,7 +94,7 @@ instance MimeType mtype => Produces GetCvSection mtype
 -- *** getFullCv
 
 -- | @GET \/api\/v3\/cvs\/{user_id}\/{cv_id}@
--- 
+--
 getFullCv
   :: Accept accept -- ^ request accept ('MimeType')
   -> UserId -- ^ "userId"
@@ -103,7 +103,7 @@ getFullCv
 getFullCv  _ (UserId userId) (CvId cvId) =
   _mkRequest "GET" ["/api/v3/cvs/",toPath userId,"/",toPath cvId]
 
-data GetFullCv  
+data GetFullCv
 -- | @*/*@
 instance MimeType mtype => Produces GetFullCv mtype
 
@@ -111,7 +111,7 @@ instance MimeType mtype => Produces GetFullCv mtype
 -- *** getUserById
 
 -- | @GET \/api\/v1\/users\/{user_id}@
--- 
+--
 getUserById
   :: Accept accept -- ^ request accept ('MimeType')
   -> UserId -- ^ "userId"
@@ -119,7 +119,7 @@ getUserById
 getUserById  _ (UserId userId) =
   _mkRequest "GET" ["/api/v1/users/",toPath userId]
 
-data GetUserById  
+data GetUserById
 -- | @*/*@
 instance MimeType mtype => Produces GetUserById mtype
 
@@ -127,7 +127,7 @@ instance MimeType mtype => Produces GetUserById mtype
 -- *** searchByName
 
 -- | @POST \/api\/v4\/search@
--- 
+--
 searchByName
   :: (Consumes SearchByName MimeJSON, MimeRender MimeJSON SearchByNameReq)
   => Accept accept -- ^ request accept ('MimeType')
@@ -137,8 +137,8 @@ searchByName  _ searchByNameReq =
   _mkRequest "POST" ["/api/v4/search"]
     `setBodyParam` searchByNameReq
 
-data SearchByName 
-instance HasBodyParam SearchByName SearchByNameReq 
+data SearchByName
+instance HasBodyParam SearchByName SearchByNameReq
 
 -- | @application/json@
 instance Consumes SearchByName MimeJSON
@@ -150,14 +150,14 @@ instance MimeType mtype => Produces SearchByName mtype
 -- *** userSearch
 
 -- | @GET \/api\/v2\/users\/search@
--- 
+--
 userSearch
   :: Accept accept -- ^ request accept ('MimeType')
   -> CVPartnerRequest UserSearch MimeNoContent [User] accept
 userSearch  _ =
   _mkRequest "GET" ["/api/v2/users/search"]
 
-data UserSearch  
+data UserSearch
 instance HasOptionalParam UserSearch From where
   applyOptionalParam req (From xs) =
     req `addQuery` toQuery ("from", Just xs)
@@ -181,4 +181,3 @@ instance HasOptionalParam UserSearch OfficeIds where
     req `addQuery` toQueryColl MultiParamArray ("office_ids", Just xs)
 -- | @*/*@
 instance MimeType mtype => Produces UserSearch mtype
-

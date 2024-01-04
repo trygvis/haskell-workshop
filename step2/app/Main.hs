@@ -1,9 +1,10 @@
 module Main where
 import System.Environment (getEnvironment)
 
+import Data.Function ((&))
 import qualified Data.Text as T
+import qualified Data.CaseInsensitive as CI
 import qualified Data.ByteString.Char8 as BS
-
 import qualified Data.ByteString.Lazy.Char8 as BCL
 import qualified Network.HTTP.Client as NH
 import qualified Network.HTTP.Types as NH
@@ -11,7 +12,7 @@ import Network.HTTP.Client.TLS
 import System.Exit ( exitFailure)
 
 import qualified CVPartner as C
-import qualified CVPartner.Model as CVPartner
+
 
 
 
@@ -21,34 +22,33 @@ getCvpartnerApiKey env = case lookup "CVPARTNER_API_KEY" env of
         _ -> putStrLn "Missing CVPARTNER_API_KEY" >> exitFailure
 
 data CvCtx = CvCtx {
-    cvCtxKey :: BS.ByteString
-  , cvCtxMgr :: NH.Manager
+    cvCtxMgr :: NH.Manager
   , cvCtxConfig :: C.CVPartnerConfig
 }
 
 main :: IO ()
 main = do
     env <- getEnvironment
-    mgr <- makeManager
+    cvpartnerApiKey <- getCvpartnerApiKey env
+
+    mgr <- makeManager cvpartnerApiKey
 
     config0 <- C.withStdoutLogging =<< C.newConfig
-    cvpartnerApiKey <- getCvpartnerApiKey env
 
     let config =
             config0 {
                 C.configHost = BCL.pack "https://scienta.cvpartner.com"
             }
-            `C.addAuthMethod` C.AuthBasicBasicAuth (BS.pack "Bearer") cvpartnerApiKey
 
     putStrLn $ "Config: " ++ show config
 
     let ctx = CvCtx {
-        cvCtxKey = cvpartnerApiKey
-      , cvCtxMgr = mgr
+        cvCtxMgr = mgr
       , cvCtxConfig = config
     }
 
-    res <- userSearch ctx
+    let req = C.userSearch (C.Accept C.MimeJSON)
+    res <- C.dispatchMime (cvCtxMgr ctx) (cvCtxConfig ctx) req
     withSuccess res listUsers
     putStrLn "yo yo"
   where
@@ -69,24 +69,28 @@ withSuccess result handler = do
       Left err -> print err
       Right value -> handler value
 
-userSearch :: CvCtx -> IO (C.MimeResult [CVPartner.User])
-userSearch ctx = do
-    putStrLn $ "key: " ++ BS.unpack key
-    C.dispatchMime (cvCtxMgr ctx) (cvCtxConfig ctx) req'
-    where
-      key = cvCtxKey ctx
-      req = C.userSearch (C.Accept C.MimeJSON)
-      req' = C.setHeader req [(NH.hAuthorization, BS.append (BS.pack "Bearer ") key)]
-
-makeManager :: IO NH.Manager
-makeManager = do
+makeManager :: BS.ByteString -> IO NH.Manager
+makeManager bearer = do
   NH.newManager tlsManagerSettings {
     NH.managerModifyRequest = yeah
   }
     where
       yeah :: NH.Request -> IO NH.Request
       yeah req = do
-        putStrLn "yeah"
+        -- print headers
         return req {
-          NH.redirectCount = 0
+            NH.requestHeaders = headers
+          , NH.redirectCount = 0
         }
+        where
+          headers' = NH.requestHeaders req
+          headers = setHeader headers' "Authorization" (BS.append (BS.pack "Bearer ") bearer)
+
+setHeader :: [NH.Header] -> String -> BS.ByteString -> [NH.Header]
+setHeader old key value = new
+  where
+    key' = BS.pack key & CI.mk
+    without = filter isKey old
+    new = without ++ [(key', value)]
+    isKey :: NH.Header -> Bool
+    isKey (k, _) = k /= key'

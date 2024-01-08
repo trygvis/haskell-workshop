@@ -10,3 +10,4 @@ step0/*
 !step0/main.hs
 
 dist-newstyle
+cabal.project.local
